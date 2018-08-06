@@ -1,0 +1,14 @@
+---
+
+env:
+  node: true
+
+parser: babel-eslint
+
+plugins: 
+  - eslint-plugin-import
+
+rules: 
+  no-console: 0
+
+extends: eslint-config-airbnb-base
