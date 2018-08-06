@@ -10,16 +10,16 @@ const genDiff = (firstFile, secondFile) => {
     if (has(cfgData2, `${key}`)) {
       const cfgDataValue2 = cfgData2[key];
       if (cfgDataValue1 === cfgDataValue2) {
-        return [...acc, `  ${key}: ${cfgDataValue1}`];
+        return [...acc, `    ${key}: ${cfgDataValue1}`];
       }
-      return [...acc, `- ${key}: ${cfgDataValue1}`, `+ ${key}: ${cfgDataValue2}`];
+      return [...acc, `  - ${key}: ${cfgDataValue1}`, `  + ${key}: ${cfgDataValue2}`];
     }
-    return [...acc, `- ${key}: ${cfgDataValue1}`];
+    return [...acc, `  - ${key}: ${cfgDataValue1}`];
   }, []);
 
   const fullDiff = Object.keys(cfgData2).reduce((acc, key) => {
     if (!has(cfgData1, `${key}`)) {
-      return [...acc, `+ ${key}: ${cfgData2[key]}`];
+      return [...acc, `  + ${key}: ${cfgData2[key]}`];
     }
     return acc;
   }, diffFirstRelativelySecond);
