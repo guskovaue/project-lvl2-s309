@@ -1,10 +1,19 @@
-import fs from 'fs';
-import yaml from 'js-yaml';
+import path from 'path';
 import { has, union } from 'lodash';
+import YamlParser from './parsers/yaml_parser';
+import JsonParser from './parsers/json_parser';
+
+const getParser = (file) => {
+  const extName = path.extname(file);
+  if (extName === '.json') {
+    return new JsonParser(file);
+  }
+  return new YamlParser(file);
+};
 
 const genDiff = (firstFile, secondFile) => {
-  const cfgData1 = yaml.safeLoad(fs.readFileSync(`${firstFile}`));
-  const cfgData2 = yaml.safeLoad(fs.readFileSync(`${secondFile}`));
+  const cfgData1 = getParser(firstFile).parse();
+  const cfgData2 = getParser(secondFile).parse();
 
   const commonKeys = union(Object.keys(cfgData1), Object.keys(cfgData2));
 
