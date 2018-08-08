@@ -1,5 +1,6 @@
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import ini from 'ini';
 import yaml from 'js-yaml';
 import { has, union } from 'lodash';
 
@@ -12,13 +13,17 @@ const actions = [
     ext: '.yaml',
     parse: data => yaml.safeLoad(data),
   },
+  {
+    ext: '.ini',
+    parse: data => ini.decode(data),
+  },
 ];
 
 const getParser = extention => actions.find(({ ext }) => extention === ext);
 
 const genDiff = (firstFile, secondFile) => {
-  const data1 = fs.readFileSync(firstFile);
-  const data2 = fs.readFileSync(secondFile);
+  const data1 = fs.readFileSync(firstFile, 'utf8');
+  const data2 = fs.readFileSync(secondFile, 'utf8');
   const cfgData1 = getParser(path.extname(firstFile)).parse(data1);
   const cfgData2 = getParser(path.extname(secondFile)).parse(data2);
 
