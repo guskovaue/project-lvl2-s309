@@ -1,19 +1,13 @@
 import path from 'path';
+import fs from 'fs';
 import { has, union } from 'lodash';
-import YamlParser from './parsers/yaml_parser';
-import JsonParser from './parsers/json_parser';
-
-const getParser = (file) => {
-  const extName = path.extname(file);
-  if (extName === '.json') {
-    return new JsonParser(file);
-  }
-  return new YamlParser(file);
-};
+import getParser from './parsers/dispatcher';
 
 const genDiff = (firstFile, secondFile) => {
-  const cfgData1 = getParser(firstFile).parse();
-  const cfgData2 = getParser(secondFile).parse();
+  const data1 = fs.readFileSync(firstFile);
+  const data2 = fs.readFileSync(secondFile);
+  const cfgData1 = getParser(path.extname(firstFile)).parse(data1);
+  const cfgData2 = getParser(path.extname(secondFile)).parse(data2);
 
   const commonKeys = union(Object.keys(cfgData1), Object.keys(cfgData2));
 
