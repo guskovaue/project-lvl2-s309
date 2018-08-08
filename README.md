@@ -6,7 +6,7 @@
 
 ## Asciinema
 
-https://asciinema.org/a/vrFuIyMnFT10oSoHJ5tALwe3C
+https://asciinema.org/a/sdVWcmF0BlYLTkAruLe2lG3XN
 
 ## Author
 
