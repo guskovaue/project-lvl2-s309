@@ -1,7 +1,20 @@
 import path from 'path';
 import fs from 'fs';
+import yaml from 'js-yaml';
 import { has, union } from 'lodash';
-import getParser from './parsers/dispatcher';
+
+const actions = [
+  {
+    ext: '.json',
+    parse: data => JSON.parse(data),
+  },
+  {
+    ext: '.yaml',
+    parse: data => yaml.safeLoad(data),
+  },
+];
+
+const getParser = extention => actions.find(({ ext }) => extention === ext);
 
 const genDiff = (firstFile, secondFile) => {
   const data1 = fs.readFileSync(firstFile);
