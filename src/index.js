@@ -42,12 +42,7 @@ const makeAst = (obj1, obj2) => {
     return [...acc, result];
   }, []);
 
-  return {
-    name: 'root',
-    oldValue: 0,
-    newValue: 0,
-    children,
-  };
+  return children;
 };
 
 const genDiff = (firstFile, secondFile) => {
@@ -59,7 +54,12 @@ const genDiff = (firstFile, secondFile) => {
   const cfgData1 = parser[ext1](data1);
   const cfgData2 = parser[ext2](data2);
 
-  return makeAst(cfgData1, cfgData2);
+  return {
+    name: 'root',
+    oldValue: 0,
+    newValue: 0,
+    children: makeAst(cfgData1, cfgData2),
+  };
 };
 
 export default genDiff;
