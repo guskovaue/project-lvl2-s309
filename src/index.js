@@ -5,16 +5,14 @@ import parser from './parser';
 
 const makeAst = (obj1, obj2) => {
   const commonKeys = union(Object.keys(obj1), Object.keys(obj2));
-
-  const children = commonKeys.reduce((acc, name) => {
+  const children = commonKeys.map((name) => {
     if (obj1[name] instanceof Object && obj2[name] instanceof Object) {
-      const result = { 
+      return { 
         name, 
         oldValue: 0, 
         newValue: 0, 
         children: makeAst(obj1[name], obj2[name]) 
       };
-      return [...acc, result];
     }
 
     let newValue = null;
@@ -32,16 +30,13 @@ const makeAst = (obj1, obj2) => {
     } else {
       newValue = obj2[name];
     }
-
-    const result = { 
+    return { 
       name, 
       oldValue, 
       newValue, 
       children: []
     };
-    return [...acc, result];
-  }, []);
-
+  });
   return children;
 };
 
