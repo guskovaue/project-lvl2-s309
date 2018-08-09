@@ -3,33 +3,70 @@ import path from 'path';
 import { has, union } from 'lodash';
 import parser from './parser';
 
+const makeAst = (obj1, obj2) => {
+  const commonKeys = union(Object.keys(obj1), Object.keys(obj2));
+
+  const children = commonKeys.reduce((acc, name) => {
+    if (obj1[name] instanceof Object && obj2[name] instanceof Object) {
+      const result = { 
+        name, 
+        oldValue: 0, 
+        newValue: 0, 
+        children: makeAst(obj1[name], obj2[name]) 
+      };
+      return [...acc, result];
+    }
+
+    let newValue = null;
+    let oldValue = null;
+    if (has(obj1, name) && has(obj2, name)) {
+      if (obj1[name] === obj2[name]) {
+        newValue = oldValue = obj1[name];
+      } else {
+        oldValue = obj1[name];
+        newValue = obj2[name];
+      }
+    }
+    if (has(obj1, name)) {
+      oldValue = obj1[name];
+    } else {
+      newValue = obj2[name];
+    }
+
+    const result = { 
+      name, 
+      oldValue, 
+      newValue, 
+      children: []
+    };
+    return [...acc, result];
+  }, []);
+
+  return {
+    name: 'root',
+    oldValue: 0,
+    newValue: 0,
+    children,
+  };
+};
+
 const genDiff = (firstFile, secondFile) => {
   const data1 = fs.readFileSync(firstFile, 'utf8');
   const data2 = fs.readFileSync(secondFile, 'utf8');
   const ext1 = path.extname(firstFile);
   const ext2 = path.extname(secondFile);
-
+  
   const cfgData1 = parser[ext1](data1);
   const cfgData2 = parser[ext2](data2);
 
-  const commonKeys = union(Object.keys(cfgData1), Object.keys(cfgData2));
-
-  const fullDiff = commonKeys.map((key) => {
-    const cfgDataValue1 = cfgData1[key];
-    const cfgDataValue2 = cfgData2[key];
-    if (has(cfgData1, key) && has(cfgData2, key)) {
-      if (cfgDataValue1 === cfgDataValue2) {
-        return `    ${key}: ${cfgDataValue1}`;
-      }
-      return `  - ${key}: ${cfgDataValue1}\n  + ${key}: ${cfgDataValue2}`;
-    }
-
-    if (has(cfgData1, key)) {
-      return `  - ${key}: ${cfgDataValue1}`;
-    }
-    return `  + ${key}: ${cfgDataValue2}`;
-  });
-  return ['{', ...fullDiff, '}'].join('\n');
+  return makeAst(cfgData1, cfgData2);
 };
 
 export default genDiff;
+
+
+
+
+
+
+
