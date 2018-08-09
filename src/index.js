@@ -1,31 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import ini from 'ini';
-import yaml from 'js-yaml';
 import { has, union } from 'lodash';
-
-const actions = [
-  {
-    ext: '.json',
-    parse: data => JSON.parse(data),
-  },
-  {
-    ext: '.yaml',
-    parse: data => yaml.safeLoad(data),
-  },
-  {
-    ext: '.ini',
-    parse: data => ini.decode(data),
-  },
-];
-
-const getParser = extention => actions.find(({ ext }) => extention === ext);
+import parser from './parser';
 
 const genDiff = (firstFile, secondFile) => {
   const data1 = fs.readFileSync(firstFile, 'utf8');
   const data2 = fs.readFileSync(secondFile, 'utf8');
-  const cfgData1 = getParser(path.extname(firstFile)).parse(data1);
-  const cfgData2 = getParser(path.extname(secondFile)).parse(data2);
+  const ext1 = path.extname(firstFile);
+  const ext2 = path.extname(secondFile);
+
+  const cfgData1 = parser[ext1](data1);
+  const cfgData2 = parser[ext2](data2);
 
   const commonKeys = union(Object.keys(cfgData1), Object.keys(cfgData2));
 
