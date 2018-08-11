@@ -63,47 +63,18 @@ export const genDiff = (firstFile, secondFile) => {
   return processItem(cfgData1, cfgData2, 'root');
 }
 
-//поменять 0 на что-нибудь
-// const propertyActions2 = [
-//   {
-//     getDiff: `{children.map(render).join('')}`,
-//     check: (oldValue, newValue) => oldValue === newValue === 0),
-//   },
-//   {
-//     getDiff: `+ ${name}: ${newValue}`,
-//     check: (oldValue, newValue) => oldValue === null,
-//   },
-//   {
-//     getDiff: `- ${name}: ${oldValue}`,
-//     check: (oldValue, newValue) => newValue === null,
-//   },
-//   {
-//     getDiff: `  ${name}: ${oldValue}`,
-//     check: (oldValue, newValue) => oldValue === newValue,
-//   },
-//     {
-//     getDiff: `- ${name}: ${oldValue}\n+ ${name}: ${newValue}`,
-//     check: (oldValue, newValue) => oldValue !== newValue,
-//   },
-// ];
-
-// const render = (astData) => {
-//   const {
-//     name, 
-//     oldValue, 
-//     newValue,
-//   } = astData;
-
-//   const getPropertyAction = (oldValue, newValue) => propertyActions.find(({ check }) => check(oldValue, newValue));
-  
-//   const { getDiff } = getPropertyAction(o1, o2);
-
 const renderObject = (object, offset = 0) => {
   const padding = '  '.repeat(offset);
   return [
     `{`,
     ...Object.keys(object).map(key => {
       const value = object[key];
+      if (value instanceof Object) {
+        return [
+          `  ${padding}${key}: `,
+          ...renderObject(value, offset + 1)
+        ].join('');
+      }
       return `    ${padding}${key}: ${value}`;
     }),
     `${padding}}`,
@@ -111,8 +82,6 @@ const renderObject = (object, offset = 0) => {
 }
 
 export const render = (item, offset = 0) => {
-  //const result = [];
-  //const structure = astData.reduce((acc, item) => {
     const padding = '  '.repeat(offset);
     const {
       name, 
@@ -120,26 +89,16 @@ export const render = (item, offset = 0) => {
       newValue,
       children
     } = item;
-    //console.log(children);
-    //console.log(name);
-    
-    // if (name === 'root') {
-    //   console.log(0, acc)
-    //   return children.map(el => render(el, [ ...acc, `{`]))
-    // }
+
+    if (name === 'root') {
+      return [
+        `{`,
+        ...children.map(child => render(child, offset + 1)),
+        `}`
+      ].join('\n');
+    }
 
     if (children.length) {
-      //console.log(1, acc)
-
-      // return [
-      //   ...acc,
-      //   `${name}: {`,
-      //   ...children.reduce(el => render(el, [])),
-      //   `}`
-      // ];
-
-      // const a1 = acc;
-      //children.reduce((a, child) => [...a, ...render(child)]);
       return [
         `  ${padding}${name}: {`,
         ...children.map(child => render(child, offset + 2)),
@@ -151,96 +110,13 @@ export const render = (item, offset = 0) => {
     let nval = newValue instanceof Object ? renderObject(newValue, offset + 1) : newValue;
 
     if (oldValue === null) {
-      //console.log(2, acc)
       return `${padding}+ ${name}: ${nval}`;
     }
     if (newValue === null) {
-      //console.log(3, acc)
       return `${padding}- ${name}: ${oval}`;
     }
     if (oldValue === newValue) {
-      //console.log(4, acc)
       return `${padding}  ${name}: ${oval}`;
     }
-    //console.log(5, acc)
     return `${padding}- ${name}: ${oval}\n${padding}+ ${name}: ${nval}`;
-
- // });
- // return structure.join("\n");
 };
-
-
-// root {
-//  level1 
-//  {
-//   level1.1
-//  }
-//  level2 
-//  {
-//   level2.2
-//   level2.3
-//   level2.4
-//  } 
-//  level3
-//   level3.3
-// }
-
-// const render = (tree) => {
-//   const result = [];
-
-//   const body = (item, offset) => {
-//     const padding = ' '.repeat(offset);
-//     const name = `${padding}${item.name}`;
-//     result.push(name);
-//     if (item.children) {
-//       result.push(`${padding}{`);
-//     }
-
-//     if (item.children) {
-//       item.children.map(i => body(i, offset+1));
-//     }
-
-//     if (item.children) {
-//       result.push(`${padding}}`);
-//     }
-//   }
-
-//   body(tree, 0);
-//   return result.join("\n");
-// } 
-  
-// if (singleTagsList.has(name)) {
-//     return [`<${name}${buildAttrString(attributes)}>`,
-//       `${body}${children.map(render).join('')}`,
-//     ].join('');
-//   }
-//   return [`<${name}${buildAttrString(attributes)}>`,
-//       `${body}${children.map(render).join('')}`,
-//       `</${name}>`,
-//     ].join('')
-
-
-// export default genDiff;
-
-
-//   const fullDiff = commonKeys.map((key) => {
-//     const cfgDataValue1 = cfgData1[key];
-//     const cfgDataValue2 = cfgData2[key];
-//     if (has(cfgData1, key) && has(cfgData2, key)) {
-//       if (cfgDataValue1 === cfgDataValue2) {
-//         return `    ${key}: ${cfgDataValue1}`;
-//       }
-//       return `  - ${key}: ${cfgDataValue1}\n  + ${key}: ${cfgDataValue2}`;
-//     }
-
-//     if (has(cfgData1, key)) {
-//       return `  - ${key}: ${cfgDataValue1}`;
-//     }
-//     return `  + ${key}: ${cfgDataValue2}`;
-//   });
-//   return ['{', ...fullDiff, '}'].join('\n');
-// };
-
-//export default genDiff;
-
-
