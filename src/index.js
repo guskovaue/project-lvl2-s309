@@ -12,7 +12,6 @@ const processItem = (obj1, obj2, name) => {
       name,
       newValue: 0,
       oldValue: 0,
-      status: 'unchanged',
       children: processChildren(obj1, obj2),
     };
   }
@@ -22,7 +21,6 @@ const processItem = (obj1, obj2, name) => {
         name,
         newValue: obj2,
         oldValue: obj1,
-        status: 'unchanged',
         children: [],
       };
     }
@@ -30,7 +28,6 @@ const processItem = (obj1, obj2, name) => {
       name,
       newValue: obj2,
       oldValue: obj1,
-      status: 'changed',
       children: [],
     };
   }
@@ -39,7 +36,6 @@ const processItem = (obj1, obj2, name) => {
       name,
       newValue: null,
       oldValue: obj1,
-      status: 'deleted',
       children: [],
     };
   }
@@ -47,7 +43,6 @@ const processItem = (obj1, obj2, name) => {
     name,
     newValue: obj2,
     oldValue: null,
-    status: 'created',
     children: [],
   };
 };
