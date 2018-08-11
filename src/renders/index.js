@@ -1,8 +1,8 @@
 import render from './render';
-import ftatten_render from './flatten_render';
+import flattenRender from './flatten_render';
 
 const renders = {
-  plain: ftatten_render,
+  plain: flattenRender,
   undefined: render,
 };
 
