@@ -13,4 +13,4 @@ test('testDiffJson', () => check('test_file1.json', 'test_file2.json'));
 
 test('testDiffYaml', () => check('test_file3.yaml', 'test_file4.yaml'));
 
-//test('testDiffIni', () => check('test_file5.ini', 'test_file6.ini'));
+test('testDiffIni', () => check('test_file5.ini', 'test_file6.ini'));
