@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import program from 'commander';
-import { genDiff, render } from '..';
+import genDiff from '..';
 
 program
   .version('1.0.1')
@@ -8,7 +8,7 @@ program
   .arguments('<firstFile> <secondFile>')
   .option('-f, --format [type]', 'Output format')
   .action(
-    (firstFile, secondFile) => console.log(render(genDiff(firstFile, secondFile))),
+    (firstFile, secondFile) => console.log(genDiff(firstFile, secondFile)),
   );
 
 program

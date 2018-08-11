@@ -1,10 +1,10 @@
 import fs from 'fs';
-import { genDiff, render } from '../src';
+import genDiff from '../src';
 
 const pathToTestFiles = './__tests__/__fixtures__';
 
 const check = (file1, file2) => {
-  const currentAnswer = render(genDiff(`${pathToTestFiles}/${file1}`, `${pathToTestFiles}/${file2}`));
+  const currentAnswer = genDiff(`${pathToTestFiles}/${file1}`, `${pathToTestFiles}/${file2}`);
   const rightAnswer = fs.readFileSync(`${pathToTestFiles}/answer`).toString();
   return expect(currentAnswer).toBe(rightAnswer);
 };
