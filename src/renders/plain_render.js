@@ -10,8 +10,8 @@ const flattenRender = (item, parentName) => {
   const nameForChildren = name === 'root' ? '' : `${parentName}${name}.`;
 
   if (children.length) {
-    return children.map((child) => flattenRender(child, nameForChildren)
-    ).filter(el => el !== null).join('\n');
+    return children.map(child => flattenRender(child, nameForChildren))
+      .filter(el => el !== null).join('\n');
   }
 
   const oval = oldValue instanceof Object ? '[complex value]' : oldValue;

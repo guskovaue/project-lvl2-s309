@@ -1,8 +1,10 @@
 import render from './render';
 import plainRender from './plain_render';
+import jsonRender from './json_render';
 
 const renders = {
   plain: plainRender,
+  json: jsonRender,
   undefined: render,
 };
 
