@@ -6,47 +6,49 @@ import render from './renders';
 
 let processChildren;
 
-const propertyActions = [
-  {
-    getNewValue: () => 0,
-    getOldValue: () => 0,
-    getChildren: (o1, o2) => processChildren(o1, o2),
-    check: (o1, o2) => o1 instanceof Object && o2 instanceof Object,
-  },
-  {
-    getNewValue: o2 => o2,
-    getOldValue: o1 => o1,
-    getChildren: () => [],
-    check: (o1, o2) => o1 !== undefined && o2 !== undefined,
-  },
-  {
-    getNewValue: () => null,
-    getOldValue: o1 => o1,
-    getChildren: () => [],
-    check: o1 => o1 !== undefined,
-  },
-  {
-    getNewValue: o2 => o2,
-    getOldValue: () => null,
-    getChildren: () => [],
-    check: (o1, o2) => o2 !== undefined,
-  },
-];
-
-const getPropertyAction = (o1, o2) => propertyActions.find(({ check }) => check(o1, o2));
-
 const processItem = (obj1, obj2, name) => {
-  const {
-    getOldValue,
-    getNewValue,
-    getChildren,
-  } = getPropertyAction(obj1, obj2);
-
+  if (obj1 instanceof Object && obj2 instanceof Object) {
+    return {
+      name,
+      newValue: 0,
+      oldValue: 0,
+      status: 'unchanged',
+      children: processChildren(obj1, obj2),
+    };
+  }
+  if (obj1 !== undefined && obj2 !== undefined) {
+    if (obj1 === obj2) {
+      return {
+        name,
+        newValue: obj2,
+        oldValue: obj1,
+        status: 'unchanged',
+        children: [],
+      };
+    }
+    return {
+      name,
+      newValue: obj2,
+      oldValue: obj1,
+      status: 'changed',
+      children: [],
+    };
+  }
+  if (obj1 !== undefined) {
+    return {
+      name,
+      newValue: null,
+      oldValue: obj1,
+      status: 'deleted',
+      children: [],
+    };
+  }
   return {
     name,
-    oldValue: getOldValue(obj1),
-    newValue: getNewValue(obj2),
-    children: getChildren(obj1, obj2),
+    newValue: obj2,
+    oldValue: null,
+    status: 'created',
+    children: [],
   };
 };
 
