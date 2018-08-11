@@ -10,14 +10,8 @@ const flattenRender = (item, parentName) => {
   const nameForChildren = name === 'root' ? '' : `${parentName}${name}.`;
 
   if (children.length) {
-    return children.map((child) => {
-      // if (name !== 'root') {
-      //   child.name = `${name}.${child.name}`;
-      // }
-      //  const childName = (name !== 'root') ? `${name}.${child.name}` : '';
-      //  return flattenRender(child, childName);
-      return flattenRender(child, nameForChildren);
-    }).filter(el => el !== null).join('\n');
+    return children.map((child) => flattenRender(child, nameForChildren)
+    ).filter(el => el !== null).join('\n');
   }
 
   const oval = oldValue instanceof Object ? '[complex value]' : oldValue;
