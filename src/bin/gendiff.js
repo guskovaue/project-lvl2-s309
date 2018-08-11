@@ -8,9 +8,8 @@ program
   .arguments('<firstFile> <secondFile>')
   .option('-f, --format [type]', 'Output format')
   .action(
-    (firstFile, secondFile) => console.log(render(genDiff(firstFile, secondFile))), //console.log(genDiff(firstFile, secondFile)),
+    (firstFile, secondFile) => console.log(render(genDiff(firstFile, secondFile))),
   );
 
-//JSON.stringify(render(genDiff(firstFile, secondFile), null, 2))
 program
   .parse(process.argv);
