@@ -1,8 +1,9 @@
+const renderObject = (value) => value instanceof Object ? '[complex value]' : value;
+
 const flattenRender = (item, parentName) => {
   const {
     name,
-    oldValue,
-    newValue,
+    status,
     children,
   } = item;
 
@@ -14,19 +15,15 @@ const flattenRender = (item, parentName) => {
       .filter(el => el !== null).join('\n');
   }
 
-  const oval = oldValue instanceof Object ? '[complex value]' : oldValue;
-  const nval = newValue instanceof Object ? '[complex value]' : newValue;
-
-  if (oldValue === null) {
-    return `Property '${fullName}' was added with value: ${nval}`;
+  if (status === 'created') {
+    return `Property '${fullName}' was added with value: ${renderObject(item.newValue)}`;
   }
-  if (newValue === null) {
+  if (status === 'deleted') {
     return `Property '${fullName}' was removed`;
   }
-  if (oldValue !== newValue) {
-    return `Property '${fullName}' was updated. From ${oval} to ${nval}`;
+  if (status === 'changed') {
+    return `Property '${fullName}' was updated. From ${renderObject(item.oldValue)} to ${renderObject(item.newValue)}`;
   }
-
   return null;
 };
 

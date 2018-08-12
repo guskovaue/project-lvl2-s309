@@ -1,4 +1,7 @@
 const renderObject = (object, offset = 0) => {
+  if (!(object instanceof Object)) {
+    return object;
+  }
   const padding = '  '.repeat(offset);
   return [
     '{',
@@ -22,6 +25,7 @@ const render = (item, offset = 0) => {
     name,
     oldValue,
     newValue,
+    status,
     children,
   } = item;
 
@@ -41,19 +45,16 @@ const render = (item, offset = 0) => {
     ].join('\n');
   }
 
-  const oval = oldValue instanceof Object ? renderObject(oldValue, offset + 1) : oldValue;
-  const nval = newValue instanceof Object ? renderObject(newValue, offset + 1) : newValue;
-
-  if (oldValue === null) {
-    return `${padding}+ ${name}: ${nval}`;
+  if (status === 'created') {
+    return `${padding}+ ${name}: ${renderObject(item.newValue, offset + 1)}`;
   }
-  if (newValue === null) {
-    return `${padding}- ${name}: ${oval}`;
+  if (status === 'deleted') {
+    return `${padding}- ${name}: ${renderObject(item.oldValue, offset + 1)}`;
   }
-  if (oldValue === newValue) {
-    return `${padding}  ${name}: ${oval}`;
+  if (status === 'unchanged') {
+    return `${padding}  ${name}: ${renderObject(item.oldValue, offset + 1)}`;
   }
-  return `${padding}- ${name}: ${oval}\n${padding}+ ${name}: ${nval}`;
+  return `${padding}- ${name}: ${renderObject(item.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(item.newValue, offset + 1)}`;
 };
 
 export default render;

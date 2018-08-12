@@ -10,8 +10,7 @@ const processItem = (obj1, obj2, name) => {
   if (obj1 instanceof Object && obj2 instanceof Object) {
     return {
       name,
-      newValue: 0,
-      oldValue: 0,
+      status: 'unchanged',
       children: processChildren(obj1, obj2),
     };
   }
@@ -21,6 +20,7 @@ const processItem = (obj1, obj2, name) => {
         name,
         newValue: obj2,
         oldValue: obj1,
+        status: 'unchanged',
         children: [],
       };
     }
@@ -28,21 +28,22 @@ const processItem = (obj1, obj2, name) => {
       name,
       newValue: obj2,
       oldValue: obj1,
+      status: 'changed',
       children: [],
     };
   }
   if (obj1 !== undefined) {
     return {
       name,
-      newValue: null,
       oldValue: obj1,
+      status: 'deleted',
       children: [],
     };
   }
   return {
     name,
     newValue: obj2,
-    oldValue: null,
+    status: 'created',
     children: [],
   };
 };
