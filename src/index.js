@@ -11,7 +11,7 @@ const getAst = (obj1, obj2, name) => {
     const commonKeys = union(Object.keys(value1), Object.keys(value2));
     return {
       name,
-      status: 'unchanged',
+      status: 'nested',
       children: commonKeys.map(key => getAst(value1, value2, key)),
     };
   }

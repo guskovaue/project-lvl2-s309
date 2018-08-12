@@ -35,7 +35,7 @@ const renderer = (item, offset = 0) => {
     ].join('\n');
   }
 
-  if (children.length) {
+  if (status === 'nested') {
     return [
       `  ${padding}${name}: {`,
       ...children.map(child => renderer(child, offset + 2)),
