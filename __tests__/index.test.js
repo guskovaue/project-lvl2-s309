@@ -23,3 +23,10 @@ test('testPlainDiffJson', () => check('test_file1.json', 'test_file2.json', 'pla
 test('testPlainDiffYaml', () => check('test_file3.yaml', 'test_file4.yaml', 'plain_answer', 'plain'));
 
 test('testPlainDiffIni', () => check('test_file5.ini', 'test_file6.ini', 'plain_answer', 'plain'));
+
+// tests for json rendering
+test('testJsonDiffJson', () => check('test_file1.json', 'test_file2.json', 'json_answer', 'json'));
+
+test('testJsonDiffYaml', () => check('test_file3.yaml', 'test_file4.yaml', 'json_answer', 'json'));
+
+test('testJsonDiffIni', () => check('test_file5.ini', 'test_file6.ini', 'json_answer', 'json'));
