@@ -23,7 +23,7 @@ const renderer = (item, offset = 0) => {
   const padding = '  '.repeat(offset);
   const {
     name,
-    status,
+    type,
     children,
   } = item;
 
@@ -35,7 +35,7 @@ const renderer = (item, offset = 0) => {
     ].join('\n');
   }
 
-  if (status === 'nested') {
+  if (type === 'nested') {
     return [
       `  ${padding}${name}: {`,
       ...children.map(child => renderer(child, offset + 2)),
@@ -43,13 +43,13 @@ const renderer = (item, offset = 0) => {
     ].join('\n');
   }
 
-  if (status === 'created') {
+  if (type === 'created') {
     return `${padding}+ ${name}: ${renderObject(item.newValue, offset + 1)}`;
   }
-  if (status === 'deleted') {
+  if (type === 'deleted') {
     return `${padding}- ${name}: ${renderObject(item.oldValue, offset + 1)}`;
   }
-  if (status === 'unchanged') {
+  if (type === 'unchanged') {
     return `${padding}  ${name}: ${renderObject(item.oldValue, offset + 1)}`;
   }
   return `${padding}- ${name}: ${renderObject(item.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(item.newValue, offset + 1)}`;

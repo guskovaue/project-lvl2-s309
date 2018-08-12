@@ -3,25 +3,25 @@ const renderObject = value => (value instanceof Object ? '[complex value]' : val
 const flattenRenderer = (item, parentName) => {
   const {
     name,
-    status,
+    type,
     children,
   } = item;
 
   const fullName = name === 'root' ? '' : `${parentName}${name}`;
   const nameForChildren = name === 'root' ? '' : `${parentName}${name}.`;
 
-  if (status === 'nested') {
+  if (type === 'nested') {
     return children.map(child => flattenRenderer(child, nameForChildren))
       .filter(el => el !== null).join('\n');
   }
 
-  if (status === 'created') {
+  if (type === 'created') {
     return `Property '${fullName}' was added with value: ${renderObject(item.newValue)}`;
   }
-  if (status === 'deleted') {
+  if (type === 'deleted') {
     return `Property '${fullName}' was removed`;
   }
-  if (status === 'changed') {
+  if (type === 'changed') {
     return `Property '${fullName}' was updated. From ${renderObject(item.oldValue)} to ${renderObject(item.newValue)}`;
   }
   return null;

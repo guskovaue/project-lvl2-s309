@@ -11,7 +11,7 @@ const getAst = (obj1, obj2, name) => {
     const commonKeys = union(Object.keys(value1), Object.keys(value2));
     return {
       name,
-      status: 'nested',
+      type: 'nested',
       children: commonKeys.map(key => getAst(value1, value2, key)),
     };
   }
@@ -21,7 +21,7 @@ const getAst = (obj1, obj2, name) => {
         name,
         newValue: value2,
         oldValue: value1,
-        status: 'unchanged',
+        type: 'unchanged',
         children: [],
       };
     }
@@ -29,7 +29,7 @@ const getAst = (obj1, obj2, name) => {
       name,
       newValue: value2,
       oldValue: value1,
-      status: 'changed',
+      type: 'changed',
       children: [],
     };
   }
@@ -37,14 +37,14 @@ const getAst = (obj1, obj2, name) => {
     return {
       name,
       oldValue: value1,
-      status: 'deleted',
+      type: 'deleted',
       children: [],
     };
   }
   return {
     name,
     newValue: value2,
-    status: 'created',
+    type: 'created',
     children: [],
   };
 };
