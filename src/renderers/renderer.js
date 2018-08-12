@@ -1,8 +1,11 @@
+import { flattenDeep } from 'lodash';
+
 const renderObject = (object, offset = 0) => {
   if (!(object instanceof Object)) {
     return object;
   }
   const padding = '  '.repeat(offset);
+
   const res = Object.keys(object).map((key) => {
     const value = object[key];
     if (value instanceof Object) {
@@ -23,14 +26,17 @@ const processRenderer = (node, offset = 1) => {
   switch (type) {
     case 'nested':
       return [
-        `  ${padding}${name}: {`,
-        ...node.children.map(child => processRenderer(child, offset + 2)),
-        `  ${padding}}`,
-      ].join('\n');
+        `${padding}  ${name}: {`,
+        node.children.map(child => processRenderer(child, offset + 2)),
+        `${padding}  }`,
+      ];
     case 'created':
       return `${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
     case 'changed':
-      return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
+      return [
+        `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}`,
+        `${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`,
+      ];
     case 'deleted':
       return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}`;
     default:
@@ -38,9 +44,10 @@ const processRenderer = (node, offset = 1) => {
   }
 };
 
-const render = (ast) => {
-  const res = ast.map(node => processRenderer(node)).join('\n');
-  return `{\n${res}\n}`;
-};
+const render = ast => flattenDeep([
+  '{',
+  ast.map(node => processRenderer(node, 1)),
+  '}',
+]).join('\n');
 
 export default render;
