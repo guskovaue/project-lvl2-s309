@@ -6,7 +6,7 @@
 
 ## Asciinema
 
-https://asciinema.org/a/sdVWcmF0BlYLTkAruLe2lG3XN
+> https://asciinema.org/a/sdVWcmF0BlYLTkAruLe2lG3XN
 
 ## About
 > Compares two configuration files and shows a diff
