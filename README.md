@@ -8,6 +8,28 @@
 
 https://asciinema.org/a/sdVWcmF0BlYLTkAruLe2lG3XN
 
+## About
+> Compares two configuration files and shows a diff
+
+## Install
+```
+npm install gendiff-pack
+```
+
+## help
+```
+Usage: gendiff [options] <firstConfig> <secondConfig>
+
+  Compares two configuration files and shows a difference
+
+  Options:
+
+    -h, --help           output usage information
+    -V, --version        output the version number
+    -f, --format [type]  output format
+```
+
 ## Author
 
 Yulia Guskova shkolnikova_yuli@mail.ru
+
