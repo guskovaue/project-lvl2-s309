@@ -16,7 +16,7 @@ https://asciinema.org/a/sdVWcmF0BlYLTkAruLe2lG3XN
 npm install gendiff-pack
 ```
 
-## help
+## Help
 ```
 Usage: gendiff [options] <firstConfig> <secondConfig>
 
