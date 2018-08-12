@@ -13,7 +13,7 @@ const flattenRenderer = (item, parentName) => {
   if (status === 'nested') {
     return children.map(child => flattenRenderer(child, nameForChildren))
       .filter(el => el !== null).join('\n');
-  } 
+  }
 
   if (status === 'created') {
     return `Property '${fullName}' was added with value: ${renderObject(item.newValue)}`;
