@@ -11,7 +11,7 @@
       },
       {
         "name": "setting2",
-        "oldValue": 200,
+        "oldValue": "200",
         "type": "deleted"
       },
       {
@@ -87,14 +87,14 @@
   {
     "name": "group2",
     "oldValue": {
-      "abc": 12345
+      "abc": "12345"
     },
     "type": "deleted"
   },
   {
     "name": "group3",
     "newValue": {
-      "fee": 100500
+      "fee": "100500"
     },
     "type": "created"
   }
