@@ -9,21 +9,19 @@ const processRenderer = (node, parentName) => {
   const fullName = `${parentName}${name}`;
   const nameForChildren = `${parentName}${name}.`;
 
-  if (type === 'nested') {
-    return node.children.map(child => processRenderer(child, nameForChildren))
-      .filter(el => el !== null).join('\n');
+  switch (type) {
+    case 'nested':
+      return node.children.map(child => processRenderer(child, nameForChildren))
+        .filter(el => el !== null).join('\n');
+    case 'created':
+      return `Property '${fullName}' was added with value: ${renderObject(node.newValue)}`;
+    case 'changed':
+      return `Property '${fullName}' was updated. From ${renderObject(node.oldValue)} to ${renderObject(node.newValue)}`;
+    case 'deleted':
+      return `Property '${fullName}' was removed`;
+    default:
+      return null;
   }
-
-  if (type === 'created') {
-    return `Property '${fullName}' was added with value: ${renderObject(node.newValue)}`;
-  }
-  if (type === 'deleted') {
-    return `Property '${fullName}' was removed`;
-  }
-  if (type === 'changed') {
-    return `Property '${fullName}' was updated. From ${renderObject(node.oldValue)} to ${renderObject(node.newValue)}`;
-  }
-  return null;
 };
 
 const render = ast => ast.map(node => processRenderer(node, '')).join('\n');

@@ -20,23 +20,22 @@ const processRenderer = (node, offset = 1) => {
     type,
   } = node;
 
-  if (type === 'nested') {
-    return [
-      `  ${padding}${name}: {`,
-      ...node.children.map(child => processRenderer(child, offset + 2)),
-      `  ${padding}}`,
-    ].join('\n');
+  switch (type) {
+    case 'nested':
+      return [
+        `  ${padding}${name}: {`,
+        ...node.children.map(child => processRenderer(child, offset + 2)),
+        `  ${padding}}`,
+      ].join('\n');
+    case 'created':
+      return `${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
+    case 'changed':
+      return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
+    case 'deleted':
+      return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}`;
+    default:
+      return `${padding}  ${name}: ${renderObject(node.oldValue, offset + 1)}`;
   }
-  if (type === 'created') {
-    return `${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
-  }
-  if (type === 'deleted') {
-    return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}`;
-  }
-  if (type === 'unchanged') {
-    return `${padding}  ${name}: ${renderObject(node.oldValue, offset + 1)}`;
-  }
-  return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
 };
 
 const render = (ast) => {
