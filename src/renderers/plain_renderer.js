@@ -1,6 +1,6 @@
-const renderObject = (value) => value instanceof Object ? '[complex value]' : value;
+const renderObject = value => (value instanceof Object ? '[complex value]' : value);
 
-const flattenRender = (item, parentName) => {
+const flattenRenderer = (item, parentName) => {
   const {
     name,
     status,
@@ -11,7 +11,7 @@ const flattenRender = (item, parentName) => {
   const nameForChildren = name === 'root' ? '' : `${parentName}${name}.`;
 
   if (children.length) {
-    return children.map(child => flattenRender(child, nameForChildren))
+    return children.map(child => flattenRenderer(child, nameForChildren))
       .filter(el => el !== null).join('\n');
   }
 
@@ -27,4 +27,4 @@ const flattenRender = (item, parentName) => {
   return null;
 };
 
-export default flattenRender;
+export default flattenRenderer;

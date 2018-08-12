@@ -1,59 +1,55 @@
 import fs from 'fs';
 import path from 'path';
-import { union } from 'lodash';
+import { has, union } from 'lodash';
 import parse from './parser';
-import render from './renders';
+import renderer from './renderers';
 
-let processChildren;
-
-const processItem = (obj1, obj2, name) => {
-  if (obj1 instanceof Object && obj2 instanceof Object) {
+const getAst = (obj1, obj2, name) => {
+  const value1 = obj1[name];
+  const value2 = obj2[name];
+  if (value1 instanceof Object && value2 instanceof Object) {
+    const commonKeys = union(Object.keys(value1), Object.keys(value2));
     return {
       name,
       status: 'unchanged',
-      children: processChildren(obj1, obj2),
+      children: commonKeys.map(key => getAst(value1, value2, key)),
     };
   }
-  if (obj1 !== undefined && obj2 !== undefined) {
-    if (obj1 === obj2) {
+  if (has(obj1, name) && has(obj2, name)) {
+    if (value1 === value2) {
       return {
         name,
-        newValue: obj2,
-        oldValue: obj1,
+        newValue: value2,
+        oldValue: value1,
         status: 'unchanged',
         children: [],
       };
     }
     return {
       name,
-      newValue: obj2,
-      oldValue: obj1,
+      newValue: value2,
+      oldValue: value1,
       status: 'changed',
       children: [],
     };
   }
-  if (obj1 !== undefined) {
+  if (has(obj1, name)) {
     return {
       name,
-      oldValue: obj1,
+      oldValue: value1,
       status: 'deleted',
       children: [],
     };
   }
   return {
     name,
-    newValue: obj2,
+    newValue: value2,
     status: 'created',
     children: [],
   };
 };
 
-processChildren = (obj1, obj2) => {
-  const commonKeys = union(Object.keys(obj1), Object.keys(obj2));
-  return commonKeys.map(name => processItem(obj1[name], obj2[name], name));
-};
-
-const genDiff = (firstFile, secondFile, type) => {
+const genDiff = (firstFile, secondFile, type = 'stylish') => {
   const data1 = fs.readFileSync(firstFile, 'utf8');
   const data2 = fs.readFileSync(secondFile, 'utf8');
   const ext1 = path.extname(firstFile);
@@ -62,8 +58,8 @@ const genDiff = (firstFile, secondFile, type) => {
   const cfgData1 = parse(ext1, data1);
   const cfgData2 = parse(ext2, data2);
 
-  const ast = processItem(cfgData1, cfgData2, 'root');
-  return render(ast, type);
+  const ast = getAst({ root: cfgData1 }, { root: cfgData2 }, 'root');
+  return renderer(ast, type);
 };
 
 export default genDiff;
