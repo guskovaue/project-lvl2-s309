@@ -1,4 +1,4 @@
-const renderObject = value => (value instanceof Object ? '[complex value]' : value);
+const renderValue = value => (value instanceof Object ? '[complex value]' : value);
 
 const processRenderer = (node, parentName) => {
   const {
@@ -14,9 +14,9 @@ const processRenderer = (node, parentName) => {
       return node.children.map(child => processRenderer(child, nameForChildren))
         .filter(el => el !== null).join('\n');
     case 'created':
-      return `Property '${fullName}' was added with value: ${renderObject(node.newValue)}`;
+      return `Property '${fullName}' was added with value: ${renderValue(node.newValue)}`;
     case 'changed':
-      return `Property '${fullName}' was updated. From ${renderObject(node.oldValue)} to ${renderObject(node.newValue)}`;
+      return `Property '${fullName}' was updated. From ${renderValue(node.oldValue)} to ${renderValue(node.newValue)}`;
     case 'deleted':
       return `Property '${fullName}' was removed`;
     default:
