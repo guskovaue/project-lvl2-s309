@@ -19,40 +19,35 @@ const renderObject = (object, offset = 0) => {
   ].join('\n');
 };
 
-const renderer = (item, offset = 0) => {
+const processRenderer = (node, offset = 1) => {
   const padding = '  '.repeat(offset);
   const {
     name,
     type,
-    children,
-  } = item;
-
-  if (name === 'root') {
-    return [
-      '{',
-      ...children.map(child => renderer(child, offset + 1)),
-      '}',
-    ].join('\n');
-  }
+  } = node;
 
   if (type === 'nested') {
     return [
       `  ${padding}${name}: {`,
-      ...children.map(child => renderer(child, offset + 2)),
+      ...node.children.map(child => processRenderer(child, offset + 2)),
       `  ${padding}}`,
     ].join('\n');
   }
-
   if (type === 'created') {
-    return `${padding}+ ${name}: ${renderObject(item.newValue, offset + 1)}`;
+    return `${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
   }
   if (type === 'deleted') {
-    return `${padding}- ${name}: ${renderObject(item.oldValue, offset + 1)}`;
+    return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}`;
   }
   if (type === 'unchanged') {
-    return `${padding}  ${name}: ${renderObject(item.oldValue, offset + 1)}`;
+    return `${padding}  ${name}: ${renderObject(node.oldValue, offset + 1)}`;
   }
-  return `${padding}- ${name}: ${renderObject(item.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(item.newValue, offset + 1)}`;
+  return `${padding}- ${name}: ${renderObject(node.oldValue, offset + 1)}\n${padding}+ ${name}: ${renderObject(node.newValue, offset + 1)}`;
 };
 
-export default renderer;
+const render = (ast) => {
+  const res = ast.map(node => processRenderer(node)).join('\n');
+  return `{\n${res}\n}\n`;
+};
+
+export default render;

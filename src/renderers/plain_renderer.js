@@ -1,30 +1,31 @@
 const renderObject = value => (value instanceof Object ? '[complex value]' : value);
 
-const flattenRenderer = (item, parentName) => {
+const processRenderer = (node, parentName) => {
   const {
     name,
     type,
-    children,
-  } = item;
+  } = node;
 
-  const fullName = name === 'root' ? '' : `${parentName}${name}`;
-  const nameForChildren = name === 'root' ? '' : `${parentName}${name}.`;
+  const fullName = `${parentName}${name}`;
+  const nameForChildren = `${parentName}${name}.`;
 
   if (type === 'nested') {
-    return children.map(child => flattenRenderer(child, nameForChildren))
+    return node.children.map(child => processRenderer(child, nameForChildren))
       .filter(el => el !== null).join('\n');
   }
 
   if (type === 'created') {
-    return `Property '${fullName}' was added with value: ${renderObject(item.newValue)}`;
+    return `Property '${fullName}' was added with value: ${renderObject(node.newValue)}`;
   }
   if (type === 'deleted') {
     return `Property '${fullName}' was removed`;
   }
   if (type === 'changed') {
-    return `Property '${fullName}' was updated. From ${renderObject(item.oldValue)} to ${renderObject(item.newValue)}`;
+    return `Property '${fullName}' was updated. From ${renderObject(node.oldValue)} to ${renderObject(node.newValue)}`;
   }
   return null;
 };
 
-export default flattenRenderer;
+const render = ast => ast.map(node => processRenderer(node, '')).join('\n');
+
+export default render;

@@ -1,3 +1,3 @@
-const jsonRenderer = item => JSON.stringify(item, null, 2);
+const render = item => JSON.stringify(item, null, 2);
 
-export default jsonRenderer;
+export default render;
