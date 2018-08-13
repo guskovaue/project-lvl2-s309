@@ -44,8 +44,10 @@ const processRenderer = (node, offset = 1) => {
       ];
     case 'deleted':
       return `${padding}- ${name}: ${renderValue(node.oldValue, offset + 1)}`;
-    default:
+    case 'unchanged':
       return `${padding}  ${name}: ${renderValue(node.oldValue, offset + 1)}`;
+    default:
+      throw new Error('Undefined node type');
   }
 };
 

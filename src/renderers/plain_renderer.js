@@ -1,29 +1,32 @@
+import { flattenDeep } from 'lodash';
+
 const renderValue = value => (value instanceof Object ? '[complex value]' : value);
 
-const processRenderer = (node, parentName) => {
-  const {
-    name,
-    type,
-  } = node;
+const render = (ast, parentName = '') => {
+  const result = ast.filter(node => node.type !== 'unchanged')
+    .map((node) => {
+      const {
+        name,
+        type,
+      } = node;
 
-  const fullName = `${parentName}${name}`;
-  const nameForChildren = `${parentName}${name}.`;
+      const fullName = `${parentName}${name}`;
+      const nameForChildren = `${parentName}${name}.`;
 
-  switch (type) {
-    case 'nested':
-      return node.children.map(child => processRenderer(child, nameForChildren))
-        .filter(el => el !== null).join('\n');
-    case 'created':
-      return `Property '${fullName}' was added with value: ${renderValue(node.newValue)}`;
-    case 'changed':
-      return `Property '${fullName}' was updated. From ${renderValue(node.oldValue)} to ${renderValue(node.newValue)}`;
-    case 'deleted':
-      return `Property '${fullName}' was removed`;
-    default:
-      return null;
-  }
+      switch (type) {
+        case 'nested':
+          return render(node.children, nameForChildren);
+        case 'created':
+          return `Property '${fullName}' was added with value: ${renderValue(node.newValue)}`;
+        case 'changed':
+          return `Property '${fullName}' was updated. From ${renderValue(node.oldValue)} to ${renderValue(node.newValue)}`;
+        case 'deleted':
+          return `Property '${fullName}' was removed`;
+        default:
+          throw new Error('Undefined node type');
+      }
+    });
+  return flattenDeep(result).join('\n');
 };
-
-const render = ast => ast.map(node => processRenderer(node, '')).join('\n');
 
 export default render;
